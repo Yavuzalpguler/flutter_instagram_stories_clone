@@ -14,18 +14,23 @@ const List<Story> stories = [
     media: MediaType.image,
     user: user,
     duration: Duration(seconds: 5),
+    timeAgo: '1 hour ago',
   ),
   Story(
-    url: 'assets/v1.mp4',
+    url:
+        'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
     media: MediaType.video,
     duration: Duration(seconds: 0),
     user: user,
+    timeAgo: '1 hour ago',
   ),
   Story(
-    url: 'assets/v2.mp4',
+    url:
+        'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
     media: MediaType.video,
     duration: Duration(seconds: 0),
     user: user,
+    timeAgo: '1 hour ago',
   ),
   Story(
     url:
@@ -33,12 +38,15 @@ const List<Story> stories = [
     media: MediaType.image,
     duration: Duration(seconds: 5),
     user: user,
+    timeAgo: '1 hour ago',
   ),
   Story(
-    url: 'assets/v3.mp4',
+    url:
+        'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
     media: MediaType.video,
     duration: Duration(seconds: 0),
     user: user,
+    timeAgo: '1 hour ago',
   ),
 ];
 List<UserStoryList> storyListUser = [

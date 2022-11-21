@@ -7,10 +7,12 @@ class Story {
   final MediaType media;
   final Duration duration;
   final User user;
+  final String timeAgo;
 
   const Story(
       {required this.url,
       required this.media,
       required this.duration,
-      required this.user});
+      required this.user,
+      required this.timeAgo});
 }

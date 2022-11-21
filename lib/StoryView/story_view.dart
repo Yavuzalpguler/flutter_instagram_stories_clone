@@ -1,3 +1,4 @@
+import 'package:cube_transition_plus/cube_transition_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_story_clone/StoryView/components/story_item.dart';
 
@@ -35,17 +36,51 @@ class _StoryViewState extends State<StoryView> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: stories.length,
-        itemBuilder: (context, index) {
-          return StoryItemView(
-            stories: _stories,
-            currentIndex: _currentIndex,
-          );
-        },
+      backgroundColor: Colors.black,
+      body: Center(
+        child: SizedBox(
+          height: height,
+          child: CubePageView(
+            children: stories
+                .map((item) => StoryItemView(
+                      stories: _stories,
+                      currentIndex: _currentIndex,
+                    ))
+                .toList(),
+          ),
+        ),
       ),
+      // body: PageView.builder(
+      //   controller: _pageController,
+      //   itemCount: stories.length,
+      //   itemBuilder: (context, index) {
+      //     return StoryItemView(
+      //       stories: _stories,
+      //       currentIndex: _currentIndex,
+      //     );
+      //   },
+      // ),
     );
   }
 }
+
+
+// Center(
+//         child: SizedBox(
+//           height: height,
+//           child: CubePageView(
+//             children: places
+//                 .map(
+//                   (item) => Image.network(
+//                     item.url,
+//                     height: height,
+//                     fit: BoxFit.cover,
+//                   ),
+//                 )
+//                 .toList(),
+//           ),
+//         ),
+//       ),
