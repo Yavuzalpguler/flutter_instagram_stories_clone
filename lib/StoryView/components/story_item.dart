@@ -10,9 +10,9 @@ import '../../data/story_data.dart';
 
 class StoryItemView extends StatefulWidget {
   const StoryItemView(
-      {super.key, required this.stories, required this.currentIndex});
+      {super.key, required this.details, required this.currentIndex});
 
-  final UserStoryList stories;
+  final UserStoryList details;
   final int currentIndex;
   @override
   State<StoryItemView> createState() => _StoryItemViewState();
@@ -36,8 +36,7 @@ class StoryOwnerItem extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-              image:
-                  CachedNetworkImageProvider(stories[1].user.profileImageUrl),
+              image: CachedNetworkImageProvider(story.user.profileImageUrl),
               fit: BoxFit.cover,
             ),
           ),
@@ -47,7 +46,7 @@ class StoryOwnerItem extends StatelessWidget {
           children: [
             const SizedBox(width: 10),
             Text(
-              stories[1].user.name,
+              story.user.name,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
@@ -83,19 +82,18 @@ class _StoryItemViewState extends State<StoryItemView>
 
     _currentIndex = widget.currentIndex;
     _animationController = AnimationController(vsync: this);
-    _loadStory(
-        story: widget.stories.story[_currentIndex], animationToPage: false);
+    _loadStory(story: widget.details.story[_currentIndex]);
     _animationController!.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _animationController!.stop();
         _animationController!.reset();
         setState(() {
-          if (_currentIndex + 1 < widget.stories.story.length) {
+          if (_currentIndex + 1 < widget.details.story.length) {
             _currentIndex += 1;
-            _loadStory(story: widget.stories.story[_currentIndex]);
+            _loadStory(story: widget.details.story[_currentIndex]);
           } else {
             _currentIndex = 0;
-            _loadStory(story: widget.stories.story[_currentIndex]);
+            _loadStory(story: widget.details.story[_currentIndex]);
           }
         });
       }
@@ -183,7 +181,7 @@ class _StoryItemViewState extends State<StoryItemView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
-                            children: widget.stories.story
+                            children: widget.details.story
                                 .asMap()
                                 .map((key, value) {
                                   return MapEntry(
@@ -255,17 +253,17 @@ class _StoryItemViewState extends State<StoryItemView>
       setState(() {
         if (_currentIndex - 1 >= 0) {
           _currentIndex -= 1;
-          _loadStory(story: widget.stories.story[_currentIndex]);
+          _loadStory(story: widget.details.story[_currentIndex]);
         }
       });
     } else if (dx > 2 * screenwidth / 3) {
       setState(() {
-        if (_currentIndex + 1 < widget.stories.story.length) {
+        if (_currentIndex + 1 < widget.details.story.length) {
           _currentIndex += 1;
-          _loadStory(story: widget.stories.story[_currentIndex]);
+          _loadStory(story: widget.details.story[_currentIndex]);
         } else {
           _currentIndex = 0;
-          _loadStory(story: widget.stories.story[_currentIndex]);
+          _loadStory(story: widget.details.story[_currentIndex]);
         }
       });
     }
@@ -294,7 +292,7 @@ class _StoryItemViewState extends State<StoryItemView>
     }
   }
 
-  void _loadStory({required Story story, bool animationToPage = true}) {
+  void _loadStory({required Story story}) {
     _animationController!.stop();
     _animationController!.reset();
     switch (story.media) {
@@ -315,13 +313,6 @@ class _StoryItemViewState extends State<StoryItemView>
           });
         break;
       default:
-    }
-    if (animationToPage) {
-      // _childpageController!.animateToPage(
-      //   _currentIndex,
-      //   duration: const Duration(milliseconds: 1),
-      //   curve: Curves.easeInOut,
-      // );
     }
   }
 }

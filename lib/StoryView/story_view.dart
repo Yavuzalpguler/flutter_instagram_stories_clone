@@ -6,10 +6,10 @@ import '../data/story_data.dart';
 
 class StoryView extends StatefulWidget {
   const StoryView(
-      {super.key, required this.currentIndex, required this.stories});
+      {super.key, required this.currentIndex, required this.details});
 
   final int currentIndex;
-  final UserStoryList stories;
+  final UserStoryList details;
   @override
   State<StoryView> createState() => _StoryViewState();
 }
@@ -18,13 +18,13 @@ class _StoryViewState extends State<StoryView> {
   late PageController _pageController;
   late int _currentIndex;
 
-  late UserStoryList _stories;
+  late UserStoryList _details;
   @override
   void initState() {
     super.initState();
 
     _currentIndex = widget.currentIndex;
-    _stories = widget.stories;
+    _details = widget.details;
     _pageController = PageController(initialPage: _currentIndex);
   }
 
@@ -46,7 +46,7 @@ class _StoryViewState extends State<StoryView> {
           child: CubePageView(
             children: stories
                 .map((item) => StoryItemView(
-                      stories: _stories,
+                      details: _details,
                       currentIndex: _currentIndex,
                     ))
                 .toList(),

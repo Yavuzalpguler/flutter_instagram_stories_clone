@@ -9,17 +9,11 @@ import '../StoryView/story_view.dart';
 class StoryItem extends StatelessWidget {
   const StoryItem({
     super.key,
-    required this.url,
+    required this.storyIndex,
     required this.size,
-    required this.userName,
-    required this.stories,
-    required this.index,
   });
-  final String url;
+  final int storyIndex;
   final double size;
-  final String userName;
-  final List<Story> stories;
-  final int index;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,13 +25,13 @@ class StoryItem extends StatelessWidget {
                 context: context,
                 builder: (context) => StoryView(
                       currentIndex: 0,
-                      stories: storyListUser[index],
+                      details: storyListUser[storyIndex],
                     ));
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(size / 2),
             child: CachedNetworkImage(
-              imageUrl: url,
+              imageUrl: storyListUser[storyIndex].user.profileImageUrl,
               width: size,
               height: size,
               fit: BoxFit.cover,
@@ -46,7 +40,7 @@ class StoryItem extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          userName,
+          storyListUser[storyIndex].user.name,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -72,12 +66,7 @@ class StoriesBarWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                StoryItem(
-                    url: storyListUser[index].user.profileImageUrl,
-                    size: 60,
-                    userName: storyListUser[index].user.name,
-                    stories: storyListUser[index].story,
-                    index: index),
+                StoryItem(size: 60, storyIndex: index),
               ],
             ),
           );

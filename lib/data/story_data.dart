@@ -1,8 +1,9 @@
 import '../models/story_model.dart';
 import '../models/user_model.dart';
 
+//THIS MODEL IS TAKEN DIRECTLY FROM A YOUTUUBE TUTORIAL
 const User user = User(
-  name: 'presence.fit',
+  name: 'Mock User',
   profileImageUrl:
       'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
 );
