@@ -1,16 +1,10 @@
 # instagram_story_clone
 
-A new Flutter project.
+## The following YouTube Channel's tutorials are used as a guide for a couple of ingredients of the project. 
 
-## Getting Started
+### [The Flutter Pro Fit](https://www.youtube.com/@theflutterprofit3448) 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##### TODO: 
+* Users should start seeing the stories from where they left of. 
+* BLoC should be used in order to handle state management and business logic.
+* Transition to next story group when the current group's queue is finished, should be handled. 
