@@ -11,7 +11,7 @@ const User user = User(
 const List<Story> stories = [
   Story(
     url:
-        'https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_1280.jpg',
+        'http://m.gettywallpapers.com/wp-content/uploads/2022/11/New-Devin-Booker-Wallpaper.jpeg',
     media: MediaType.image,
     user: user,
     duration: Duration(seconds: 5),
@@ -53,58 +53,66 @@ const List<Story> stories = [
 List<UserStoryList> storyListUser = [
   UserStoryList(
       user: const User(
-        name: 'Mock User',
-        profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
-      ),
-      story: stories),
-  UserStoryList(
-      user: const User(
         name: 'Mock User 1',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/09/Post-Malone-4k-Wallpaper.jpg',
       ),
+      id: '1',
       story: stories),
   UserStoryList(
       user: const User(
         name: 'Mock User 2',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/11/Gareth-Bale-Wallpaper.jpeg',
       ),
+      id: '2',
       story: stories),
   UserStoryList(
       user: const User(
         name: 'Mock User 3',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/11/Dj-Snake-Wallpaper.jpeg',
       ),
+      id: '3',
       story: stories),
   UserStoryList(
       user: const User(
         name: 'Mock User 4',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/11/Hitman-Absolution-Wallpaper-HD.jpeg',
       ),
+      id: '4',
       story: stories),
   UserStoryList(
       user: const User(
         name: 'Mock User 5',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/09/4k-Post-Malone-Wallpaper-For-Mobile.jpg',
       ),
+      id: '5',
       story: stories),
   UserStoryList(
       user: const User(
         name: 'Mock User 6',
         profileImageUrl:
-            'http://m.gettywallpapers.com/wp-content/uploads/2021/03/Cool-HD-Wallpaper.jpg',
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/11/Devin-Booker-Wallpapers.jpg',
       ),
+      id: '6',
+      story: stories),
+  UserStoryList(
+      user: const User(
+        name: 'Mock User 7',
+        profileImageUrl:
+            'http://m.gettywallpapers.com/wp-content/uploads/2022/11/New-Devin-Booker-Wallpaper.jpeg',
+      ),
+      id: '7',
       story: stories),
 ];
 
 class UserStoryList {
   List<Story> story;
   User user;
+  String id;
 
-  UserStoryList({required this.story, required this.user});
+  UserStoryList({required this.story, required this.user, required this.id});
 }
