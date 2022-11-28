@@ -10,70 +10,27 @@ import '../../data/story_data.dart';
 
 class StoryItemView extends StatefulWidget {
   const StoryItemView(
-      {super.key, required this.details, required this.currentIndex});
+      {super.key,
+      required this.details,
+      required this.currentIndex,
+      required this.onPress,
+      required this.onTapDownBloc});
 
   final UserStoryList details;
   final int currentIndex;
+  final Function onPress;
+  final Function onTapDownBloc;
+
   @override
   State<StoryItemView> createState() => _StoryItemViewState();
-}
-
-class StoryOwnerItem extends StatelessWidget {
-  const StoryOwnerItem({
-    super.key,
-    required this.story,
-  });
-
-  final Story story;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(story.user.profileImageUrl),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            const SizedBox(width: 10),
-            Text(
-              story.user.name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              story.timeAgo,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        )
-      ],
-    );
-  }
 }
 
 class _StoryItemViewState extends State<StoryItemView>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
   VideoPlayerController? _videoPlayerController;
-
+  Function? _onPress;
+  Function? _onTapDownBloc;
   late int _currentIndex;
 
   @override
@@ -81,21 +38,31 @@ class _StoryItemViewState extends State<StoryItemView>
     super.initState();
 
     _currentIndex = widget.currentIndex;
+    _onPress = widget.onPress;
+    _onTapDownBloc = widget.onTapDownBloc;
     _animationController = AnimationController(vsync: this);
-    _loadStory(story: widget.details.story[_currentIndex]);
+
+    _loadStory(story: widget.details.story[_currentIndex], isNext: false);
+
     _animationController!.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _animationController!.stop();
         _animationController!.reset();
-        setState(() {
-          if (_currentIndex + 1 < widget.details.story.length) {
-            _currentIndex += 1;
-            _loadStory(story: widget.details.story[_currentIndex]);
-          } else {
-            _currentIndex = 0;
-            _loadStory(story: widget.details.story[_currentIndex]);
-          }
-        });
+
+        if (mounted) {
+          setState(() {
+            if (_currentIndex + 1 < widget.details.story.length) {
+              _currentIndex += 1;
+              _loadStory(
+                  story: widget.details.story[_currentIndex], isNext: false);
+              _onTapDownBloc!(true, widget.details.id);
+            } else {
+              _currentIndex = 0;
+              _loadStory(
+                  story: widget.details.story[_currentIndex], isNext: true);
+            }
+          });
+        }
       }
     });
   }
@@ -103,6 +70,7 @@ class _StoryItemViewState extends State<StoryItemView>
   @override
   void dispose() {
     _animationController!.dispose();
+    _videoPlayerController?.dispose();
 
     super.dispose();
   }
@@ -112,15 +80,16 @@ class _StoryItemViewState extends State<StoryItemView>
     var paddingTop = MediaQuery.of(context).padding.top;
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var currentStory = stories[_currentIndex];
+
     return Scaffold(
         backgroundColor: Colors.black,
         body: GestureDetector(
-          onTapDown: (details) => _onTapDown(details, stories[_currentIndex]),
+          onTapDown: (details) =>
+              _onTapDown(details, widget.details.story[_currentIndex]),
           onLongPressDown: (details) =>
-              _onLongPressDown(details, stories[_currentIndex]),
+              _onLongPressDown(details, widget.details.story[_currentIndex]),
           onLongPressEnd: (details) =>
-              _onLongPressEnd(details, stories[_currentIndex]),
+              _onLongPressEnd(details, widget.details.story[_currentIndex]),
           onVerticalDragUpdate: (details) => Navigator.of(context).pop(),
           child: Padding(
             padding: EdgeInsets.only(top: paddingTop),
@@ -130,9 +99,10 @@ class _StoryItemViewState extends State<StoryItemView>
                     color: Colors.black,
                     height: screenHeight - 100,
                     width: screenWidth,
-                    child: currentStory.media == MediaType.image
+                    child: widget.details.story[_currentIndex].media ==
+                            MediaType.image
                         ? CachedNetworkImage(
-                            imageUrl: currentStory.url,
+                            imageUrl: widget.details.story[_currentIndex].url,
                             fit: BoxFit.fill,
                           )
                         : (_videoPlayerController!.value.isInitialized)
@@ -201,7 +171,7 @@ class _StoryItemViewState extends State<StoryItemView>
                   left: 10.0,
                   child: Column(
                     children: [
-                      StoryOwnerItem(story: currentStory),
+                      StoryOwnerItem(details: widget.details),
                     ],
                   ),
                 ),
@@ -250,69 +220,138 @@ class _StoryItemViewState extends State<StoryItemView>
     final double screenwidth = MediaQuery.of(context).size.width;
     final double dx = details.globalPosition.dx;
     if (dx < screenwidth / 3) {
-      setState(() {
-        if (_currentIndex - 1 >= 0) {
-          _currentIndex -= 1;
-          _loadStory(story: widget.details.story[_currentIndex]);
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (_currentIndex - 1 >= 0) {
+            _currentIndex -= 1;
+            _loadStory(
+                story: widget.details.story[_currentIndex], isNext: false);
+            _onTapDownBloc!(false, widget.details.id);
+          }
+        });
+      }
     } else if (dx > 2 * screenwidth / 3) {
-      setState(() {
-        if (_currentIndex + 1 < widget.details.story.length) {
-          _currentIndex += 1;
-          _loadStory(story: widget.details.story[_currentIndex]);
-        } else {
-          _currentIndex = 0;
-          _loadStory(story: widget.details.story[_currentIndex]);
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (_currentIndex + 1 < widget.details.story.length) {
+            _currentIndex += 1;
+            _loadStory(
+                story: widget.details.story[_currentIndex], isNext: false);
+            _onTapDownBloc!(true, widget.details.id);
+          } else {
+            _currentIndex = 0;
+            _loadStory(
+                story: widget.details.story[_currentIndex], isNext: true);
+          }
+        });
+      }
     }
   }
 
   void _onLongPressDown(LongPressDownDetails details, Story story) {
-    if (story.media == MediaType.video) {
-      if (_videoPlayerController!.value.isPlaying) {
-        _videoPlayerController!.pause();
-        _animationController!.stop();
+    if (mounted) {
+      if (story.media == MediaType.video) {
+        if (_videoPlayerController!.value.isPlaying) {
+          _videoPlayerController!.pause();
+          _animationController!.stop();
+        } else {
+          _videoPlayerController!.play();
+          _animationController!.forward();
+        }
       } else {
-        _videoPlayerController!.play();
-        _animationController!.forward();
+        _animationController!.stop();
       }
-    } else {
-      _animationController!.stop();
     }
   }
 
   void _onLongPressEnd(LongPressEndDetails details, Story story) {
-    if (story.media == MediaType.video) {
-      _videoPlayerController!.play();
-      _animationController!.forward();
-    } else {
-      _animationController!.forward();
+    if (mounted) {
+      if (story.media == MediaType.video) {
+        _videoPlayerController!.play();
+        _animationController!.forward();
+      } else {
+        _animationController!.forward();
+      }
     }
   }
 
-  void _loadStory({required Story story}) {
-    _animationController!.stop();
-    _animationController!.reset();
-    switch (story.media) {
-      case MediaType.image:
-        _animationController!.duration = const Duration(seconds: 5);
-        _animationController!.forward();
-        break;
-      case MediaType.video:
-        _videoPlayerController = VideoPlayerController.network(story.url)
-          ..initialize().then((value) {
-            setState(() {});
-            if (_videoPlayerController!.value.isInitialized) {
-              _animationController!.duration =
-                  _videoPlayerController!.value.duration;
-              _videoPlayerController!.play();
-              _animationController!.forward();
-            }
-          });
-        break;
-      default:
+  void _loadStory({required Story story, required bool isNext}) {
+    if (mounted) {
+      _animationController!.stop();
+      _animationController!.reset();
+      switch (story.media) {
+        case MediaType.image:
+          _animationController!.duration = const Duration(seconds: 5);
+          _animationController!.forward();
+          break;
+        case MediaType.video:
+          _videoPlayerController = VideoPlayerController.network(story.url)
+            ..initialize().then((value) {
+              if (_videoPlayerController!.value.isInitialized) {
+                _animationController!.duration =
+                    _videoPlayerController!.value.duration;
+                _videoPlayerController!.play();
+                _animationController!.forward();
+              }
+            });
+          break;
+        default:
+      }
+
+      if (isNext == true) {
+        _onPress!();
+      }
     }
+  }
+}
+
+class StoryOwnerItem extends StatelessWidget {
+  const StoryOwnerItem({
+    super.key,
+    required this.details,
+  });
+
+  final UserStoryList details;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(details.user.profileImageUrl),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const SizedBox(width: 10),
+            Text(
+              details.user.name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              details.story[1].timeAgo,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        )
+      ],
+    );
   }
 }
